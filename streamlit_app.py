@@ -6,6 +6,7 @@ import numpy as np
 import plotly.graph_objects as go
 import streamlit as st
 from model import Parameters, solve, sweep
+from model_guide import render_guide
 
 st.set_page_config(page_title='Hollow Soil Column', page_icon='🧱', layout='wide')
 st.title('Hollow soil column under vertical load')
@@ -54,7 +55,7 @@ elif result['max_strain'] > 0.02 or abs(result['dV_ratio']) > 0.05:
 if ti/ri > 0.1 or to/ro > 0.1:
     st.warning('A membrane thickness exceeds 10% of its radius; the thin hoop-membrane approximation may be unsuitable.')
 
-view, curves, theory = st.tabs(['Deformation', 'Load–response curves', 'Model and assumptions'])
+view, curves, theory = st.tabs(['Deformation', 'Load–response curves', 'Step-by-step model guide'])
 with view:
     left,right = st.columns([1.5,1])
     display_scale = scale
@@ -116,12 +117,4 @@ with curves:
     st.download_button('Download load sweep CSV',out.getvalue(),'load_sweep.csv','text/csv')
     st.download_button('Download parameter JSON',json.dumps(asdict(p),indent=2),'parameters.json','application/json')
 with theory:
-    st.markdown('''The three unknowns are top shortening δ, inner radial movement uᵢ, and outer radial movement uₒ. The bottom is fixed vertically; frictionless plates permit radial movement. The soil is isotropic and linearly elastic. Membranes supply hoop stiffness only, with no axial load contribution. Contact is maintained; wrinkling and slip are not modeled.''')
-    st.latex(r'u_r(r)=Ar+B/r,\quad u_z(z)=-\delta z/H')
-    st.latex(r'A=\frac{r_o u_o-r_i u_i}{r_o^2-r_i^2},\quad B=r_i u_i-Ar_i^2')
-    st.latex(r'\varepsilon_r=A-B/r^2,\quad\varepsilon_\theta=A+B/r^2,\quad\varepsilon_z=-\delta/H')
-    st.latex(r'U_s=2\pi H\int_{r_i}^{r_o}\left[G(\varepsilon_r^2+\varepsilon_\theta^2+\varepsilon_z^2)+\frac{\lambda}{2}(\varepsilon_r+\varepsilon_\theta+\varepsilon_z)^2\right]r\,dr')
-    st.latex(r'k_i=2\pi H E_i t_i/r_i,\quad k_o=2\pi H E_o t_o/r_o')
-    st.latex(r'\Delta V=2\pi r_i H u_i-\pi r_i^2\delta,\quad \Delta p=-p_{0,abs}\Delta V/V_0')
-    st.latex(r'\mathbf K\mathbf q=[F,0,0]^T,\quad \mathbf K_{air}=\frac{p_{0,abs}}{V_0}\mathbf g\mathbf g^T')
-    st.markdown('''**Pressure interpretation.** Absolute pressure = atmospheric + gauge pressure. Sealed air adds tangent stiffness; regulated pressure has zero incremental gas stiffness in this approximation. Changing initial pressure holds the reference geometry and soil stiffness fixed. Initial prestress and geometric stiffness effects are omitted.\n\n**Scope.** This model predicts incremental, quasi-static response with uniform heightwise shortening and radial movement. It does not predict initial inflation, barreling, buckling, membrane collapse, soil yield, drainage, consolidation, or large-deformation response. A soft inner membrane can wrinkle or buckle in reality, which a bilateral hoop spring cannot capture. Straight load-response curves are expected because this model is linear.\n\nDefaults are illustrative, not calibrated experimental properties. See `MODEL.md` for the derivation and boundary conditions.''')
+    render_guide(p, result, maximum*fraction/100)
