@@ -63,3 +63,10 @@ Ideal gas and fluid cavity coupling, official Abaqus theory documentation:
 https://docs.software.vt.edu/abaqusv2025/English/SIMACAETHERefMap/simathe-c-fluidelem.htm
 
 The annular displacement approximation, hoop spring energies, and stiffness assembly here are derived directly from the stated strain field and elastic energy; they are not a validated constitutive law for a particular soil specimen.
+
+## Reference for the radial displacement form
+
+Kazimi, M. S., Todreas, N. E., and Wolf, L. *Introduction to Structural Mechanics*. MIT OpenCourseWare, 22.312 course materials (Fall 2015), Section 4.1, printed p. 28 (PDF p. 31), Eqs. (4.7a)–(4.8a).
+https://ocw.mit.edu/courses/22-312-engineering-of-nuclear-reactors-fall-2015/eb49bc4f3e701be60ca651c5a109312f_MIT22_312F15_note_L4.pdf#page=31
+
+For axisymmetric, height-independent radial displacement in homogeneous isotropic linear elasticity, with constant axial strain and no radial body force, radial equilibrium reduces to u″ + u′/r − u/r² = 0. Its general solution is u = Ar + B/r. The MIT notes present plane strain (zero axial strain); a spatially constant nonzero axial strain adds no radial derivative to equilibrium, so the same radial form follows. This is an elasticity-based shape, rather than an arbitrary interpolation between the wall movements. Applying it along the full specimen height excludes barreling and end effects. The reference does not validate the complete coupled model.
