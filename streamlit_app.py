@@ -19,13 +19,13 @@ with st.sidebar:
     ro = st.number_input('Outer radius (mm)', 5., 500., 300., 1.)/1000
     ri = st.number_input('Inner radius (mm)', 1., 499., 100., 1.)/1000
     st.header('Soil')
-    Es = st.number_input('Soil modulus (MPa)', 0.01, 10000., 10., 0.5)*1e6
+    Es = st.number_input('Soil Young’s modulus (MPa)', 0.01, 10000., 10., 0.5)*1e6
     nu = st.slider('Soil Poisson ratio', 0.0, 0.49, 0.30, 0.01)
     st.header('Inner membrane')
-    Ei = st.number_input('Inner modulus (MPa)', 0.0, 100000., 1., 0.5)*1e6
+    Ei = st.number_input('Inner membrane Young’s modulus (MPa)', 0.0, 100000., 1., 0.5)*1e6
     ti = st.number_input('Inner thickness (mm)', 0.0, 20., 0.5, 0.1)/1000
     st.header('Outer membrane')
-    Eo = st.number_input('Outer modulus (MPa)', 0.0, 100000., 75000., 10.)*1e6
+    Eo = st.number_input('Outer membrane Young’s modulus (MPa)', 0.0, 100000., 75000., 10.)*1e6
     to = st.number_input('Outer thickness (mm)', 0.0, 20., 0.5, 0.1)/1000
     st.header('Air and loading')
     sealed = st.radio('Air condition', ['Sealed, isothermal', 'Regulated, constant pressure']) == 'Sealed, isothermal'
