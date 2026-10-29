@@ -22,11 +22,18 @@ def render_guide(p, result, force):
         st.warning('If your load acts only on the annular soil and the cavity has a mechanically independent end cap, the shared-plate boundary condition must be changed. The current equations do not represent that setup.')
 
     with st.expander('Step 3 · Approximate the displacement field'):
-        st.markdown('Instead of solving displacement at thousands of mesh points, use a smooth radial shape controlled by the two boundary movements. Let r be distance from the axis and z be height above the bottom.')
-        st.latex(r'u_r(r)=Ar+\frac{B}{r},\qquad u_z(z)=-\frac{\delta}{H}z')
-        st.latex(r'A=\frac{r_ou_o-r_iu_i}{r_o^2-r_i^2},\qquad B=r_iu_i-Ar_i^2')
-        st.markdown('A and B are shape coefficients, not extra independent unknowns. Their formulas enforce uᵣ(rᵢ) = uᵢ and uᵣ(rₒ) = uₒ. Vertical displacement is zero at the bottom and −δ at the top.')
-        st.markdown('**Axisymmetric assumption:** every direction around the axis behaves identically. **Heightwise approximation:** radial displacement does not vary with height. Thus the walls remain straight in the longitudinal view; barreling and asymmetric buckling cannot appear.')
+        st.markdown('The model solves only three movements: top shortening δ, inner-wall radial movement uᵢ, and outer-wall radial movement uₒ. To describe movement at every soil point, we assume the following displacement shapes. Here r is the original distance from the axis and z is the original height above the bottom.')
+        st.markdown('**Vertical movement — uniform shortening.** The bottom stays fixed and the top moves downward by δ. We assume displacement changes linearly with height:')
+        st.latex(r'u_z(z)=-\delta z/H')
+        st.markdown('Thus the bottom moves 0, the middle moves −δ/2, and the top moves −δ. Every horizontal layer has the same axial strain; this is an assumption rather than a prediction about heightwise variation.')
+        st.markdown('**Radial movement — an assumed shape through the soil thickness.** We choose:')
+        st.latex(r'u_r(r)=Ar+B/r')
+        st.markdown('Positive radial movement is outward. The shape must match the inner and outer wall movements:')
+        st.latex(r'Ar_i+B/r_i=u_i,\qquad Ar_o+B/r_o=u_o')
+        st.markdown('Solving these two boundary equations determines A and B:')
+        st.latex(r'A=\frac{r_o u_o-r_i u_i}{r_o^2-r_i^2},\qquad B=r_i u_i-Ar_i^2')
+        st.markdown('A and B are calculated from uᵢ and uₒ, so they add no independent unknowns. The boundary movements alone do not determine a unique interior displacement; choosing Ar + B/r is the simplifying shape assumption.')
+        st.markdown('**Key assumptions:** (1) axisymmetry: movement is identical around the circumference, with no twisting; (2) radial movement is independent of height: points at the same radius move radially by the same amount at the bottom, middle, and top; (3) vertical displacement varies linearly with height and is the same at every radius. Consequently, the model permits uniform widening or narrowing but cannot reproduce midheight barreling, end-friction effects, or asymmetric buckling.')
 
     with st.expander('Step 4 · Convert displacement into soil strain'):
         st.markdown('Strain measures relative change in length. The radial strain measures stretching through the annulus thickness; hoop strain measures change in circumference; axial strain measures change in height.')

@@ -14,23 +14,23 @@ st.caption('Explore how soil, hoop membranes, and cavity air share an additional
 
 with st.sidebar:
     st.header('Specimen')
-    H = st.number_input('Height (mm)', 20., 2000., 300., 10.)/1000
-    ro = st.number_input('Outer radius (mm)', 5., 500., 50., 1.)/1000
-    ri = st.number_input('Inner radius (mm)', 1., 499., 25., 1.)/1000
+    H = st.number_input('Height (mm)', 20., 2000., 600., 10.)/1000
+    ro = st.number_input('Outer radius (mm)', 5., 500., 300., 1.)/1000
+    ri = st.number_input('Inner radius (mm)', 1., 499., 100., 1.)/1000
     st.header('Soil')
-    Es = st.number_input('Soil modulus (MPa)', 0.01, 10000., 5., 0.5)*1e6
+    Es = st.number_input('Soil modulus (MPa)', 0.01, 10000., 10., 0.5)*1e6
     nu = st.slider('Soil Poisson ratio', 0.0, 0.49, 0.30, 0.01)
     st.header('Inner membrane')
     Ei = st.number_input('Inner modulus (MPa)', 0.0, 100000., 1., 0.5)*1e6
     ti = st.number_input('Inner thickness (mm)', 0.0, 20., 0.5, 0.1)/1000
     st.header('Outer membrane')
-    Eo = st.number_input('Outer modulus (MPa)', 0.0, 100000., 100., 10.)*1e6
-    to = st.number_input('Outer thickness (mm)', 0.0, 20., 1., 0.1)/1000
+    Eo = st.number_input('Outer modulus (MPa)', 0.0, 100000., 75000., 10.)*1e6
+    to = st.number_input('Outer thickness (mm)', 0.0, 20., 0.5, 0.1)/1000
     st.header('Air and loading')
     sealed = st.radio('Air condition', ['Sealed, isothermal', 'Regulated, constant pressure']) == 'Sealed, isothermal'
     pg = st.number_input('Initial gauge pressure (kPa)', 0., 5000., 50., 10.)*1000
-    patm = st.number_input('Atmospheric pressure (kPa)', 1., 200., 101.325, 1.)*1000
-    maximum = st.number_input('Maximum additional force (N)', 1., 100000., 100., 10.)
+    patm = st.number_input('Atmospheric pressure (kPa)', 1., 200., 101.33, 1.)*1000
+    maximum = st.number_input('Maximum additional force (N)', 1., 100000., 10000., 10.)
     fraction = st.slider('Applied load (% of maximum)', 0, 100, 100)
     scale = st.slider('Displacement exaggeration', 1, 100, 10)
 

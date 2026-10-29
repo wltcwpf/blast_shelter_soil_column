@@ -5,17 +5,17 @@ from numpy.polynomial.legendre import leggauss
 
 @dataclass(frozen=True)
 class Parameters:
-    H: float = 0.30
-    ri: float = 0.025
-    ro: float = 0.05
-    Es: float = 5e6
+    H: float = 0.60
+    ri: float = 0.100
+    ro: float = 0.300
+    Es: float = 10e6
     nu: float = 0.30
     Ei: float = 1e6
     ti: float = 0.0005
-    Eo: float = 100e6
-    to: float = 0.001
+    Eo: float = 75000e6
+    to: float = 0.0005
     p_gauge: float = 50e3
-    p_atm: float = 101325.0
+    p_atm: float = 101330.0
     sealed: bool = True
 
     def validate(self):
