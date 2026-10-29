@@ -5,7 +5,10 @@ import streamlit as st
 
 def render_guide(p, result, force):
     st.header('Understand the model, step by step')
-    st.markdown('Follow the steps in order: define the specimen, choose what movements are allowed, calculate how each component resists movement, and balance the additional load. Each step explains both the equation and its physical meaning.')
+    st.markdown('**How the components work together.** A total additional downward force acts on a rigid plate covering the soil and the air cavity. As the plate moves down, the soil shortens and its inner and outer boundaries move radially. Each membrane moves with the soil boundary it touches, so its hoop resistance depends on that same boundary displacement.')
+    st.markdown('The plate movement and the inner-wall movement also change the air-cavity volume. For sealed air, this changes the pressure, which acts on the inner wall and the plate. The soil, membranes, and gas therefore respond together: their forces depend on the same three movements—top shortening, inner-wall movement, and outer-wall movement.')
+    st.markdown('To find these movements, the model adds the resistance of the three components and solves three coupled equilibrium equations. The vertical equation balances the total applied force, while the two radial equations balance forces at the inner and outer boundaries. The energy method below provides a convenient way to obtain these equations. For regulated air, pressure stays constant and the incremental gas stiffness is zero.')
+    st.caption('The steps below develop this calculation: displacement → strain → component resistance → coupled equilibrium → predicted movements.')
     st.info('The numerical examples below update with your sidebar settings. Dimensions and pressure refer to an already pressurized specimen; the calculated displacements begin from that reference state.')
 
     with st.expander('Step 1 · Define the hollow specimen and reference state', expanded=True):
@@ -31,7 +34,7 @@ def render_guide(p, result, force):
         st.markdown('This form follows from radial equilibrium for homogeneous, isotropic, linearly elastic material with axisymmetric, height-independent radial displacement, constant axial strain, and no radial body force. These assumptions reduce radial equilibrium to:')
         st.latex(r'\frac{d^2u_r}{dr^2}+\frac{1}{r}\frac{du_r}{dr}-\frac{u_r}{r^2}=0')
         st.markdown('Integrating this equation gives Ar + B/r. Thus the radial shape has a basis in elasticity theory. Using it throughout our specimen assumes that the radial movement is the same at every height.')
-        st.markdown('**Reference:** M. S. Kazimi, N. E. Todreas, and L. Wolf, *Introduction to Structural Mechanics*, MIT OpenCourseWare, Section 4.1, printed p. 28 (PDF p. 31), Eqs. (4.7a)–(4.8a). [Read the lecture notes](https://ocw.mit.edu/courses/22-312-engineering-of-nuclear-reactors-fall-2015/eb49bc4f3e701be60ca651c5a109312f_MIT22_312F15_note_L4.pdf#page=31). The notes derive the zero-axial-strain case. Allowing a spatially constant axial strain, as in this app, leaves the radial differential equation unchanged. This reference supports the radial displacement form; the coupled soil–membrane–air model includes the additional assumptions explained in the following steps.')
+        st.markdown('**Reference:** M. S. Kazimi, N. E. Todreas, and L. Wolf, *Introduction to Structural Mechanics*, MIT OpenCourseWare, Section 4.1, printed p. 28 (PDF p. 31), Eqs. (4.7a)–(4.8a). [Read the lecture notes](https://ocw.mit.edu/courses/22-312-engineering-of-nuclear-reactors-fall-2015/eb49bc4f3e701be60ca651c5a109312f_MIT22_312F15_note_L4.pdf#page=31). The notes derive the zero-axial-strain case. Allowing a spatially constant axial strain, as in this app, leaves the radial differential equation unchanged.')
         st.markdown('Positive radial movement is outward. The shape must match the inner and outer wall movements:')
         st.latex(r'Ar_i+B/r_i=u_i,\qquad Ar_o+B/r_o=u_o')
         st.markdown('Solving these two boundary equations determines A and B:')
@@ -53,7 +56,7 @@ def render_guide(p, result, force):
 | $E_s$ | Soil Young’s modulus | Axial stiffness in an unconfined uniaxial elastic test; larger values mean stiffer soil | Pa or MPa |
 | $\nu$ | Soil Poisson ratio | Negative lateral-to-axial strain ratio in an unconfined uniaxial test | Dimensionless |
 | $G$ | Shear modulus; second Lamé parameter | Resistance to shear deformation | Pa or MPa |
-| $\lambda$ | First Lamé parameter | Elastic constant coupling normal stress to volumetric strain; **not damping** | Pa or MPa |
+| $\lambda$ | First Lamé parameter | Elastic constant coupling normal stress to volumetric strain | Pa or MPa |
 | $\varepsilon_r,\varepsilon_\theta,\varepsilon_z$ | Radial, hoop, and axial normal strains | Relative length changes in the three directions | Dimensionless |
 | $w_s$ | Soil elastic strain-energy density | Recoverable elastic energy per unit soil volume | J/m³ |
 | $U_s$ | Total soil elastic strain energy | Energy density integrated over the soil volume | J |""")
@@ -62,7 +65,6 @@ def render_guide(p, result, force):
         G=p.Es/(2*(1+p.nu))
         lam=p.Es*p.nu/((1+p.nu)*(1-2*p.nu))
         st.write(f'For the current inputs: soil Young’s modulus Eₛ = {p.Es/1e6:.3f} MPa, Poisson ratio ν = {p.nu:.2f}, shear modulus G = {G/1e6:.3f} MPa, and first Lamé parameter λ = {lam/1e6:.3f} MPa.')
-        st.markdown('λ is related to volume change but is not the bulk modulus. The bulk modulus is K = λ + 2G/3. Neither G nor λ represents damping; this model has no damping or energy dissipation.')
         st.markdown('**Using energy to find equilibrium.** A spring stores elastic energy U = kx²/2, where k is its stiffness and x is its displacement. The derivative dU/dx = kx gives the force that resists movement. We use the same principle for the column: calculate the energy associated with soil deformation, membrane movement, and air compression, then use its derivatives to balance their resistance against the applied load in Step 8.')
         st.markdown('For this strain field, the elastic energy stored per unit soil volume is:')
         st.latex(r'w_s=G(\varepsilon_r^2+\varepsilon_\theta^2+\varepsilon_z^2)+\frac{\lambda}{2}(\varepsilon_r+\varepsilon_\theta+\varepsilon_z)^2')
@@ -87,7 +89,7 @@ def render_guide(p, result, force):
         st.markdown('**Symbols:** V₀ is initial cavity volume (m³); ΔV is its additional volume change (m³); δ is top shortening (m); uᵢ is inner-wall radial movement (m). The symbol Δ means change from the initial pressurized state.')
         st.markdown('The first term increases volume when the inner membrane moves outward; the second decreases volume when the plate moves downward. Thus cavity volume can decrease even when the inner membrane moves outward.')
         st.latex(r'p_{0,\mathrm{abs}}=p_{\mathrm{atm}}+p_{0,\mathrm{gauge}}')
-        st.markdown('**Pressure symbols:** p₀,abs is initial absolute air pressure, pₐₜₘ is atmospheric pressure, and p₀,gauge is initial pressure above atmosphere (all in Pa internally). Below, Δp is pressure change (Pa), and Uₐ is the incremental gas-resistance energy used by this model (J). Uₐ is not a calculation of the gas’s total thermodynamic internal energy.')
+        st.markdown('**Pressure symbols:** p₀,abs is initial absolute air pressure, pₐₜₘ is atmospheric pressure, and p₀,gauge is initial pressure above atmosphere (all in Pa internally). Below, Δp is pressure change (Pa), and Uₐ is the incremental gas-resistance energy used by this model (J).')
         st.markdown('**Sealed air:** no air enters or leaves. Slow loading is approximated as isothermal, meaning constant temperature. With ideal-gas behavior, pV = p₀V₀; its first-order change is:')
         st.latex(r'\Delta p=-\frac{p_{0,\mathrm{abs}}}{V_0}\Delta V,\qquad U_a=\frac{p_{0,\mathrm{abs}}}{2V_0}(\Delta V)^2')
         st.markdown('Compression of the cavity raises pressure; expansion lowers it. Absolute pressure controls compressibility, so even zero gauge pressure gives gas resistance. Pressure is assumed spatially uniform; fast-loading thermal effects and gas flow dynamics are omitted.')
@@ -102,7 +104,7 @@ def render_guide(p, result, force):
         st.markdown('**Symbols:** Π is total incremental potential energy (J); Uₛ, Uₘ, and Uₐ are the soil, membrane, and gas contributions (J). F is additional vertical force (N); Fδ is its work (J). The vector q = [δ, uᵢ, uₒ]ᵀ contains the three movements. Setting each partial derivative to zero enforces equilibrium for its associated movement.')
         st.latex(r'(\mathbf K_s+\mathbf K_m+\mathbf K_a)\mathbf q=[F,0,0]^T')
         st.latex(r'\mathbf K_m=\operatorname{diag}(0,k_i,k_o),\quad\mathbf g=[-\pi r_i^2,\,2\pi r_iH,\,0]^T,\quad\mathbf K_a=\frac{p_{0,\mathrm{abs}}}{V_0}\mathbf g\mathbf g^T')
-        st.markdown('The vector g converts movement to cavity-volume change through ΔV = gᵀq; its entries have units of m². A superscript T denotes transpose. The matrices Kₛ, Kₘ, and Kₐ have units of N/m. These stiffness matrices are distinct from the scalar bulk modulus K mentioned in Step 5.')
+        st.markdown('The vector g converts movement to cavity-volume change through ΔV = gᵀq; its entries have units of m². A superscript T denotes transpose. The matrices Kₛ, Kₘ, and Kₐ have units of N/m.')
         st.markdown('Kₛ, Kₘ, and Kₐ are the soil, membrane, and gas stiffness matrices. For regulated air, Kₐ = 0. The right-hand side has zeros in its radial entries because no *additional independent generalized radial forces* are applied; radial soil, membrane, and gas forces still act and balance.')
         st.markdown('Solving these three equations gives the top shortening and the two wall movements together. The stiffnesses stay constant in this model, so doubling the additional force doubles each displacement. This produces straight load–response curves. Real soil may depart from this behavior as the load increases.')
 

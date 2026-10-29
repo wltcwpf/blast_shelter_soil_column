@@ -11,6 +11,7 @@ from model_guide import render_guide
 st.set_page_config(page_title='Hollow Soil Column', page_icon='🧱', layout='wide')
 st.title('Hollow soil column under vertical load')
 st.caption('Explore how soil, hoop membranes, and cavity air share an additional compression load.')
+st.markdown('A downward force compresses the soil and moves its inner and outer membranes. These shared movements also change the air-cavity volume and, for sealed air, its pressure. The model combines the soil, membrane, and gas resistance and solves for the top shortening and both wall movements together. Open **Step-by-step model guide** for the equations and assumptions.')
 
 with st.sidebar:
     st.header('Specimen')
